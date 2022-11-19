@@ -1,14 +1,9 @@
 .env
 .idea
 krypta/__pycache__/wsgi.cpython-310.pyc
-users/__pycache__/license.cpython-310.pyc
 users/__pycache__/permissions.cpython-310.pyc
 users/__pycache__/serializers.cpython-310.pyc
-users/__pycache__/signals.cpython-310.pyc
 users/__pycache__/urls.cpython-310.pyc
 users/__pycache__/views.cpython-310.pyc
 users/migrations/__pycache__/
-users/__pycache__/admin.cpython-310.pyc
-users/__pycache__/apps.cpython-310.pyc
-users/__pycache__/models.cpython-310.pyc
-krypta/__pycache__/settings.cpython-310.pyc
+text.txt
