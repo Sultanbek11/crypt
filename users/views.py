@@ -46,3 +46,5 @@ class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
 class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersProfileSerializer
     queryset = Users.objects.all()
+
+
