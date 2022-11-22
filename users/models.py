@@ -50,7 +50,7 @@ class Users(AbstractUser):
     objects = MyUserManager()
 
     def __str__(self):
-        return f'{self.email, self.verify_code}'
+        return self.email
 
 
 class UserProfile(models.Model):
@@ -59,6 +59,9 @@ class UserProfile(models.Model):
     age = models.IntegerField(null=True)
     first_name = models.CharField(max_length=150, blank=True, null=True)
     last_name = models.CharField(max_length=150, blank=True, null=True)
+
+    def __str__(self):
+        return self.first_name
 
 
 @receiver(post_save, sender=Users)
@@ -75,6 +78,7 @@ def create_profile(sender, instance, created, **kwargs):
                   fail_silently=False
                   )
         UserProfile.objects.create(user=instance)
+        UserProfile.objects.update(first_name=instance.username)
 
 
 @receiver(reset_password_token_created)
