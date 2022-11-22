@@ -38,4 +38,10 @@ class VerifySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ('token', 'email', )
+        fields = ('token', 'email',)
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    model = Users
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)

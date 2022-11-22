@@ -7,8 +7,11 @@ from django.core.mail import send_mail
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django_rest_passwordreset.signals import reset_password_token_created
 from phone_field import PhoneField
 from uuid import uuid4
+
+from rest_framework.reverse import reverse
 
 
 class MyUserManager(BaseUserManager):
@@ -61,14 +64,30 @@ class UserProfile(models.Model):
 @receiver(post_save, sender=Users)
 def create_profile(sender, instance, created, **kwargs):
     token_ = instance.verify_code
-    print(token_)
     if created:
-        send_mail('krypta"gmail.com',
-                  f'''Ваш токен: {token_}\n
-                  Пожалуйста перейдите по ссылке ниже и введите его
-                  http://127.0.0.1:8000/users/verify/''',
+        send_mail('krypta@gmail.com',
+                  f'''
+            Ваш токен: {token_}
+            Пожалуйста перейдите по ссылке ниже и введите его
+            http://127.0.0.1:8000/users/verify/''',
                   settings.EMAIL_HOST_USER,
                   [f'{instance.email}'],
-                  fail_silently=False)
-
+                  fail_silently=False
+                  )
         UserProfile.objects.create(user=instance)
+
+
+@receiver(reset_password_token_created)
+def password_reset_token_created(sender, instance, reset_password_token, *args, **kwargs):
+    email_plaintext_message = reset_password_token.key
+
+    send_mail(
+        "Восстановление пароля",
+        f'''
+        Ваш токен для восстановления пароля
+        Токен: {email_plaintext_message}. 
+        Перейдите по ссылке, введите ваш токен и новый пароль
+        http://127.0.0.1:8000/users/password_reset/confirm/''',
+        "krypta@gmail.com",
+        [reset_password_token.user.email]
+    )

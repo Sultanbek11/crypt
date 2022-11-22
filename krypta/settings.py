@@ -37,12 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_rest_passwordreset',
     'rest_framework_simplejwt',
     'users.apps.UsersConfig',
     'valuta.apps.ValutaConfig',
     'wallet.apps.WalletConfig',
     'phone_field',
-    'test',
 ]
 
 MIDDLEWARE = [
