@@ -31,3 +31,11 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class VerifySerializer(serializers.ModelSerializer):
+    token = serializers.CharField(max_length=50)
+
+    class Meta:
+        model = Users
+        fields = ('token', 'email', )

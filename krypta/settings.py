@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'valuta.apps.ValutaConfig',
     'wallet.apps.WalletConfig',
     'phone_field',
+    'test',
 ]
 
 MIDDLEWARE = [

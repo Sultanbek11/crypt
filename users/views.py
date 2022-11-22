@@ -1,13 +1,13 @@
 from urllib import request
-
 from rest_framework.generics import (ListCreateAPIView, RetrieveUpdateDestroyAPIView, )
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Users
 from .permissions import IsOwnerProfileOrReadOnly
-from .serializers import UsersProfileSerializer, UserRegisterSerializer
+from .serializers import UsersProfileSerializer, UserRegisterSerializer, VerifySerializer
 
 
 class RegisterUserView(generics.CreateAPIView):
@@ -27,16 +27,6 @@ class RegisterUserView(generics.CreateAPIView):
             return Response(data)
 
 
-class UserProfileListCreateView(ListCreateAPIView):
-    queryset = Users.objects.all()
-    serializer_class = UsersProfileSerializer
-    permission_classes = [IsAuthenticated]
-
-    def perform_create(self, serializer):
-        user = self.request.user
-        serializer.save(user=user)
-
-
 class UserProfileDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Users.objects.all()
     serializer_class = UsersProfileSerializer
@@ -48,3 +38,19 @@ class UsersViewSet(viewsets.ModelViewSet):
     queryset = Users.objects.all()
 
 
+class Verify_EmailAPIView(generics.UpdateAPIView):
+    serializer_class = VerifySerializer
+    queryset = Users.objects.all()
+
+    def post(self, request):
+        user_obj = Users.objects.get(email=request.data.get('email'))
+        serializer = VerifySerializer(user_obj, data=request.data)
+        if serializer.is_valid():
+            if Users.objects.filter(
+                    verify_code=serializer.validated_data['token'],
+                    email=serializer.validated_data['email']).exists():
+                user_obj.is_active = True
+                user_obj.verify_code_status = True
+                serializer.save()
+                return Response({'status': 'token is right, you`re verified'})
+        return Response({'user': 'is created'})
