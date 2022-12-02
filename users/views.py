@@ -1,4 +1,4 @@
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
 from .models import Users
@@ -30,30 +30,25 @@ class RegisterUserView(generics.CreateAPIView):
 class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersProfileSerializer
     queryset = Users.objects.all()
+    permission_classes = (IsAdminUser,)
 
 
-class Verify_EmailAPIView(generics.UpdateAPIView):
+class Verify_EmailAPIView(generics.RetrieveAPIView):
     serializer_class = VerifySerializer
-    queryset = Users.objects.all()
+    queryset = Users.objects.filter(is_active=False)
+    lookup_field = 'verify_code'
 
-    def post(self, request):
-        user_obj = Users.objects.get(email=request.data.get('email'))
-        serializer = VerifySerializer(user_obj, data=request.data)
-        if serializer.is_valid():
-            if Users.objects.filter(
-                    verify_code=serializer.validated_data['token'],
-                    email=serializer.validated_data['email']).exists():
-                user_obj.is_active = True
-                user_obj.verify_code_status = True
-                serializer.save()
-                return Response({'status': 'token is right, you`re verified'})
-        return Response({'user': 'is created'})
+    def retrieve(self, request, *args, **kwargs):
+        instance: Users = self.get_object()
+        serializer = self.get_serializer(instance)
+        instance.verify_account()
+        return Response(serializer.data)
 
 
 class ChangePasswordView(generics.UpdateAPIView):
     serializer_class = ChangePasswordSerializer
     model = Users
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self, queryset=None):
         obj = self.request.user

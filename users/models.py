@@ -11,8 +11,6 @@ from django_rest_passwordreset.signals import reset_password_token_created
 from phone_field import PhoneField
 from uuid import uuid4
 
-from rest_framework.reverse import reverse
-
 
 class MyUserManager(BaseUserManager):
     def _create_user(self, email, username, password, **extra_fields):
@@ -52,6 +50,15 @@ class Users(AbstractUser):
     def __str__(self):
         return self.email
 
+    def verify_account(self):
+        self.is_active = True
+        self.verify_code_status = True
+        self.save(update_fields=['is_active', 'verify_code_status'])
+
+    def generate_uuid(self):
+        self.verify_code = uuid4()
+        self.save(update_fields=['verify_code'])
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, primary_key=True, on_delete=models.CASCADE,
@@ -63,6 +70,10 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.first_name
 
+    class Meta:
+        verbose_name = "Профиль Пользователя"
+        verbose_name_plural = "Профили Пользователей"
+
 
 @receiver(post_save, sender=Users)
 def create_profile(sender, instance, created, **kwargs):
@@ -70,9 +81,8 @@ def create_profile(sender, instance, created, **kwargs):
     if created:
         send_mail('krypta@gmail.com',
                   f'''
-            Ваш токен: {token_}
             Пожалуйста перейдите по ссылке ниже и введите его
-            http://127.0.0.1:8000/users/verify/''',
+            http://127.0.0.1:8000/users/verify/{token_}''',
                   settings.EMAIL_HOST_USER,
                   [f'{instance.email}'],
                   fail_silently=False

@@ -34,11 +34,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
 
 class VerifySerializer(serializers.ModelSerializer):
-    token = serializers.CharField(max_length=50)
-
     class Meta:
         model = Users
-        fields = ('token', 'email',)
+        fields = ('email', 'verify_code')
 
 
 class ChangePasswordSerializer(serializers.Serializer):

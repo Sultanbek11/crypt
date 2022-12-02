@@ -19,7 +19,7 @@ urlpatterns = [
     path('refresh_token/', TokenRefreshView.as_view(), name='token_refresh'),
     path('', include(router.urls)),
     path('reg/', RegisterUserView.as_view(), name='register'),
-    path('verify/', Verify_EmailAPIView.as_view(), name='verify_token'),
+    path('verify/<uuid:verify_code>', Verify_EmailAPIView.as_view(), name='verify_token'),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('change_password/', ChangePasswordView.as_view(), name='change-password'),
 ]
