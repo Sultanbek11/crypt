@@ -1,7 +1,7 @@
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
-from .models import Users
+from .models import Users, UserProfile
 from .serializers import (
     UsersProfileSerializer,
     UserRegisterSerializer,
@@ -29,7 +29,7 @@ class RegisterUserView(generics.CreateAPIView):
 
 class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersProfileSerializer
-    queryset = Users.objects.all()
+    queryset = UserProfile.objects.all()
     permission_classes = (IsAdminUser,)
 
 

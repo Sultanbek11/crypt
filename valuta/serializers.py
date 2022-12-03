@@ -1,8 +1,9 @@
 from rest_framework import serializers
-from .models import Value, Valuta
+from .models import Value
 
 
-class ParseSerializer(serializers.ModelSerializer):
+class ValueSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Valuta
-        fields = '__all__'
+        model = Value
+        fields = ('title', 'price', 'volume', 'changes_12hour',)
+

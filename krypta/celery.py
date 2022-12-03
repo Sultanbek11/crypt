@@ -16,9 +16,9 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 app.conf.beat_schedule = {
-    'create_hundred_products': {
-        'task': 'news.tasks.create_parsing_items',
-        'schedule': crontab("*/1"),
+    'parsing': {
+        'task': 'valuta.tasks.parsing_value',
+        'schedule': crontab(minute='*/5'),
     },
 }
 app.conf.timezone = 'UTC'
