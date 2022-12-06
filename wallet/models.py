@@ -12,7 +12,7 @@ from valuta.models import Value
 
 class Wallets(models.Model):
     owners = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    summ_in_dollar = models.DecimalField(decimal_places=3, max_digits=40, verbose_name='сумма', null=True)
+    summ_in_dollar = models.DecimalField(decimal_places=3, max_digits=40, null=True)
     title_valute = models.ForeignKey(Value, on_delete=models.PROTECT, null=True)
 
     def __str__(self):
