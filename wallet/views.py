@@ -19,8 +19,8 @@ class Wallet_add(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
     serializer_class = BuyValuteSerializer
 
-    def post(self, request, pk, *args, **kwargs):
-        valuta = get_object_or_404(Value, id=pk)
+    def post(self, request, *args, **kwargs):
+        valuta = get_object_or_404(Value, id=request.pk)
         # summ = request.data
         # wallet = Wallets.objects.get(owners=request.user)
         serializer = BuyValuteSerializer(data=request.data)
