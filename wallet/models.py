@@ -36,6 +36,5 @@ class WalletsInfo(models.Model):
 
 @receiver(post_save, sender=Users)
 def create_profile(sender, instance, created, **kwargs):
-    print(f'wallets instance{instance}')
     if created:
         Wallets.objects.create(owners=instance)

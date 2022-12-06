@@ -27,8 +27,6 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
-
-# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_yasg',
     'django_rest_passwordreset',
     'rest_framework_simplejwt',
     'users.apps.UsersConfig',
@@ -45,6 +44,8 @@ INSTALLED_APPS = [
     'phone_field',
     'celery',
 ]
+
+# Application definition
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
