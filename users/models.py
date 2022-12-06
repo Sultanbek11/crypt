@@ -77,6 +77,7 @@ class UserProfile(models.Model):
 
 @receiver(post_save, sender=Users)
 def create_profile(sender, instance, created, **kwargs):
+    print(f'users instance{instance}')
     token_ = instance.verify_code
     if created:
         send_mail('krypta@gmail.com',

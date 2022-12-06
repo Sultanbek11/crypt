@@ -5,5 +5,5 @@ from .models import Value
 class ValueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Value
-        fields = ('title', 'price', 'volume', 'changes_12hour',)
+        fields = ('id', 'title', 'price', 'volume', 'changes_12hour',)
 
