@@ -5,6 +5,6 @@ BuyValutAPIView,
 )
 
 urlpatterns = [
-    path('buy/<int:pk>', BuyValutAPIView.as_view()),
+    path('buy/', BuyValutAPIView.as_view()),
     # path('buy/', BuyAPIView.as_view()),
 ]

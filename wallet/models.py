@@ -3,20 +3,18 @@ from django.db import models
 from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
 from users.models import Users
 
 
 class Wallet(models.Model):
-    owners = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wallet')
-    summ_in_dollar = models.DecimalField(decimal_places=3, max_digits=40, null=True)
-
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='wallet')
+    summ_in_dollar = models.DecimalField(decimal_places=3, max_digits=40, null=True, default=0)
+    wallets_token = models.UUIDField(default=uuid4)
     def __str__(self):
-        return str(self.owners)
+        return str(self.owner)
 
-    def update_(self, new):
-        self.summ_in_dollar += new
-        self.save()
+    class Meta:
+        verbose_name_plural = "Кошелёк"
 
 
 class WalletValutes(models.Model):
@@ -26,32 +24,47 @@ class WalletValutes(models.Model):
     def __str__(self):
         return self.title_valute
 
+    class Meta:
+        verbose_name_plural = "Валюты в кошельке"
 
-class Order(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='order')
+
+class Purchase(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='purchase')
     valuta = models.CharField(max_length=255)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.valuta
 
+    class Meta:
+        verbose_name_plural = "Покупки"
 
-class WalletInfo(models.Model):
+
+class PurchaseInfo(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
     token = models.UUIDField(default=uuid4)
-    history_transactions = models.ForeignKey(Order, models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='purchase_info')
 
     def __str__(self):
         return self.token
 
+    class Meta:
+        verbose_name_plural = "Информация о пкупках"
 
 @receiver(post_save, sender=Users)
 def create_wallet(sender, instance, created, **kwargs):
     if created:
-        Wallet.objects.create(owners=instance)
+        Wallet.objects.create(owner=instance)
 
-@receiver(post_save, sender=Order)
+
+@receiver(post_save, sender=Purchase)
 def add_to_wallet(sender, instance, created, **kwargs):
     if created:
-
-
+        wallet = Wallet.objects.get(owner=instance.user)
+        purchase_info = PurchaseInfo.objects.create(user=instance.user)
+        purchase_info.save()
+        if wallet.summ_in_dollar > 0 or None:
+            wallet.summ_in_dollar += instance.amount
+            wallet.save()
+        else:
+            wallet.summ_in_dollar = instance.amount

@@ -14,7 +14,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ['email', 'username', 'password', 'password2', 'phone']
+        fields = ('email', 'username', 'password', 'password2', 'phone', )
 
     def save(self, *args, **kwargs):
         # Создаём объект класса User
