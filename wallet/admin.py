@@ -10,7 +10,7 @@ class ProfilesAdmin(admin.ModelAdmin):
 
 @admin.register(WalletValutes)
 class ProfilesAdmin(admin.ModelAdmin):
-    list_display = ('title_valute', 'owner')
+    list_display = ('owner', 'title_valute')
 
 
 @admin.register(Purchase)
@@ -20,7 +20,7 @@ class ProfilesAdmin(admin.ModelAdmin):
 
 @admin.register(PurchaseInfo)
 class ProfilesAdmin(admin.ModelAdmin):
-    list_display = ('token', 'created', 'user')
+    list_display = ('user', 'token', 'created')
 
 # admin.site.register(WalletValutes)
 # admin.site.register(OrderInfo)
