@@ -14,7 +14,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Users
-        fields = ('email', 'username', 'password', 'password2', 'phone', )
+        fields = ('email', 'username', 'password', 'password2', 'phone',)
 
     def save(self, *args, **kwargs):
         # Создаём объект класса User
@@ -45,26 +45,33 @@ class ChangePasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(required=True)
 
 
-class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField(max_length=255)
-    password = serializers.CharField(max_length=128, write_only=True)
-    token = serializers.CharField(max_length=255, read_only=True)
-    model = Users
+class LoginSerializer(serializers.ModelSerializer):
+    # email = serializers.CharField(max_length=255)
+    # password = serializers.CharField(max_length=128, write_only=True)
+    # token = serializers.CharField(max_length=255, read_only=True)
+    # model = Users
+
+    class Meta:
+        model = Users
+        fields = ('email', 'password')
 
     def validate(self, data):
         # В методе validate мы убеждаемся, что текущий экземпляр
         # LoginSerializer значение valid. В случае входа пользователя в систему
         # это означает подтверждение того, что присутствуют адрес электронной
         # почты и то, что эта комбинация соответствует одному из пользователей.
-        email = data.get('email', None)
-        password = data.get('password', None)
+        email = data.get('email')
+        password = data.get('password')
 
         # Вызвать исключение, если не предоставлена почта.
         if email is None:
             raise serializers.ValidationError(
                 'An email address is required to log in.'
             )
-
+        # if phone is None:
+        #     raise serializers.ValidationError(
+        #         'A phone is required to log in.'
+        #     )
         # Вызвать исключение, если не предоставлен пароль.
         if password is None:
             raise serializers.ValidationError(
@@ -75,7 +82,7 @@ class LoginSerializer(serializers.Serializer):
         # предоставленные почта и пароль соответствуют какому-то пользователю в
         # нашей базе данных. Мы передаем email как username, так как в модели
         # пользователя USERNAME_FIELD = email.
-        user = authenticate(email=email, password=password)
+        user = authenticate(email=email, password=password) #phone=phone)
 
         # Если пользователь с данными почтой/паролем не найден, то authenticate
         # вернет None. Возбудить исключение в таком случае.
