@@ -1,7 +1,6 @@
-import json
-
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
@@ -16,8 +15,10 @@ class MyUserManager(BaseUserManager):
     def _create_user(self, email, username, password, **extra_fields):
         if not email:
             raise ValueError("Вы не ввели Email")
+
         if not username:
             raise ValueError("Вы не ввели Логин")
+
         user = self.model(
             email=self.normalize_email(email),
             username=username,
@@ -31,11 +32,11 @@ class MyUserManager(BaseUserManager):
         return self._create_user(email, username, password)
 
     def create_superuser(self, email, username, password):
-        return self._create_user(email, username, password, is_staff=True, is_superuser=True)
+        return self._create_user(email, username, password, is_staff=True, is_superuser=True, is_active=True)
 
 
 class Users(AbstractUser):
-    phone = PhoneField(unique=True, null=False)
+    phone = PhoneField(null=True)
     email = models.EmailField(max_length=100, unique=True)
     is_active = models.BooleanField(default=False)  # Статус активации
     is_staff = models.BooleanField(default=False)  # Статус админа

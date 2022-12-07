@@ -24,14 +24,18 @@ def parsing_value():
             name = changes_24h[0].find('span').find('a').text
             price = changes_24h[1].find('a', class_='conv_cur').text
             volume = changes_24h[4].find('span').text
+            # obj1 = Value.objects.create(title=name, changes_12hour=change, price=price, volume=volume)
+            # obj1.save()
             obj = Value.objects.get(title=name)
             obj.changes_12hour = change
-            obj.price = price
+            obj.price = float(price)
             obj.volume = volume
             obj.save()
         except:
             change = '0.0'
             volume = '0.0'
+            # obj1 = Value.objects.create(changes_12hour=change, volume=volume)
+            # obj1.save()
             obj = Value.objects.get(title=name)
             obj.changes_12hour = change
             obj.volume = volume

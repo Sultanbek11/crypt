@@ -9,6 +9,7 @@ from .views import (
     RegisterUserView,
     Verify_EmailAPIView,
     ChangePasswordView,
+    LoginAPIView
 )
 
 router = DefaultRouter()
@@ -22,4 +23,5 @@ urlpatterns = [
     path('verify/<uuid:verify_code>', Verify_EmailAPIView.as_view(), name='verify_token'),
     path('password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('change_password/', ChangePasswordView.as_view(), name='change-password'),
+    path('login/', LoginAPIView.as_view()),
 ]

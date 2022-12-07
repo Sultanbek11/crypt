@@ -18,7 +18,7 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     'parsing': {
         'task': 'valuta.tasks.parsing_value',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(hour='*/12'),
     },
 }
 app.conf.timezone = 'UTC'

@@ -1,12 +1,15 @@
-from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework import viewsets, generics, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import Users, UserProfile
 from .serializers import (
     UsersProfileSerializer,
     UserRegisterSerializer,
     VerifySerializer,
     ChangePasswordSerializer,
+    LoginSerializer,
 )
 
 
@@ -30,7 +33,7 @@ class RegisterUserView(generics.CreateAPIView):
 class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersProfileSerializer
     queryset = UserProfile.objects.all()
-    permission_classes = (IsAdminUser,)
+    permission_classes = (IsAdminUser, IsAuthenticatedOrReadOnly)
 
 
 class Verify_EmailAPIView(generics.RetrieveAPIView):
@@ -74,3 +77,19 @@ class ChangePasswordView(generics.UpdateAPIView):
             return Response(response)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LoginAPIView(APIView):
+    permission_classes = (AllowAny, )
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        user = request.data.get('user', {})
+
+        # Обратите внимание, что мы не вызываем метод save() сериализатора, как
+        # делали это для регистрации. Дело в том, что в данном случае нам
+        # нечего сохранять. Вместо этого, метод validate() делает все нужное.
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
