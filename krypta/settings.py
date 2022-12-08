@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'phone_field',
     'celery',
     'django_filters',
+    'corsheaders',
 ]
 
 # Application definition
@@ -56,6 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
 
 ROOT_URLCONF = 'krypta.urls'
@@ -77,6 +80,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'krypta.wsgi.application'
+
+
+CORS_ALLOWED_ORIGINS = [
+    "https://krypto1171.com",
+    "https://sub.example.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
