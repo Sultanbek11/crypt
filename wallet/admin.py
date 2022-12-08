@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Wallet, WalletValutes, Purchase, PurchaseInfo
+from .models import Wallet, WalletValutes, Purchase, PurchaseInfo, Sell
 
 
 # Register your models here.
@@ -21,6 +21,10 @@ class ProfilesAdmin(admin.ModelAdmin):
 @admin.register(PurchaseInfo)
 class ProfilesAdmin(admin.ModelAdmin):
     list_display = ('user', 'token', 'created')
+
+@admin.register(Sell)
+class ProfilesAdmin(admin.ModelAdmin):
+    list_display = ('user', 'valuta', 'amount')
 
 # admin.site.register(WalletValutes)
 # admin.site.register(OrderInfo)

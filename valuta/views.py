@@ -10,7 +10,7 @@ class ValueListAPIView(generics.ListAPIView):
     queryset = Value.objects.all()
     serializer_class = ValueSerializer
     filter_backends = [filters.OrderingFilter]
-    filterset_fields = ['price']
+    filterset_fields = ['id']
 
 class ValueRetriveAPIView(generics.RetrieveAPIView):
     queryset = Value.objects.all()

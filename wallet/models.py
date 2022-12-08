@@ -12,7 +12,7 @@ class Wallet(models.Model):
     wallets_token = models.UUIDField(default=uuid4)
 
     def __str__(self):
-        return str(self.owner)
+        return self.owner
 
     class Meta:
         verbose_name_plural = "Кошелёк"
@@ -21,6 +21,7 @@ class Wallet(models.Model):
 class WalletValutes(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title_valute = models.CharField(max_length=60, null=True)
+    # amount = models.ForeignKey(Wallet, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title_valute
@@ -39,6 +40,18 @@ class Purchase(models.Model):
 
     class Meta:
         verbose_name_plural = "Покупки"
+
+
+class Sell(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sell')
+    valuta = models.CharField(max_length=255)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return self.valuta
+
+    class Meta:
+        verbose_name_plural = "Продажи"
 
 
 class PurchaseInfo(models.Model):
@@ -71,6 +84,25 @@ def add_to_wallet(sender, instance, created, **kwargs):
         valutes_in_wallet.save()
         if wallet.summ_in_dollar > 0:
             wallet.summ_in_dollar += instance.amount
+            wallet.save()
+        else:
+            wallet.summ_in_dollar = instance.amount
+            wallet.save()
+
+
+@receiver(post_save, sender=Sell)
+def sell_valute(sender, instance, created, **kwargs):
+    if created:
+        wallet = Wallet.objects.get(owner=instance.user)
+        # purchase_info = PurchaseInfo.objects.create(user=instance.user)
+        # purchase_info.save()
+        valutes_in_wallet = WalletValutes.objects.filter(
+            owner=instance.user)
+        if wallet.summ_in_dollar == 0:
+            valutes_in_wallet.delete()
+            valutes_in_wallet.save()
+        if wallet.summ_in_dollar > 0:
+            wallet.summ_in_dollar -= instance.amount
             wallet.save()
         else:
             wallet.summ_in_dollar = instance.amount
