@@ -1,10 +1,13 @@
 .env
 .idea
+__pycache__/
 krypta/__pycache__/wsgi.cpython-310.pyc
 users/__pycache__/permissions.cpython-310.pyc
 users/__pycache__/serializers.cpython-310.pyc
 users/__pycache__/urls.cpython-310.pyc
 users/__pycache__/views.cpython-310.pyc
 users/migrations/__pycache__/
-__pycache__/
 test.py
+krypta/__pycache__/__init__.cpython-310.pyc
+krypta/__pycache__/settings.cpython-310.pyc
+wallet/__pycache__/models.cpython-310.pyc

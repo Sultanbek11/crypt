@@ -15,12 +15,10 @@ class ValueListAPIView(generics.ListAPIView):
 class ValueRetriveAPIView(generics.RetrieveAPIView):
     queryset = Value.objects.all()
     serializer_class = ValueSerializer
-    # filter_backends = [filters.OrderingFilter]
-    # filterset_fields = ['price']
 
 class ValueViewSet(viewsets.ModelViewSet):
     queryset = Value.objects.all()
     serializer_class = ValueSerializer
-    permission_classes = IsAdminUser
+    # permission_classes = IsAdminUser
     filter_backends = [filters.OrderingFilter]
     filterset_fields = ['price']

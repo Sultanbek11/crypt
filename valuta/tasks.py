@@ -1,6 +1,3 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 from .models import Value
 from krypta.celery import app
 import requests
@@ -9,7 +6,7 @@ from bs4 import BeautifulSoup
 
 @app.task()
 def parsing_value():
-    print('test')
+    print('Работает')
     url = 'https://bitinfocharts.com/ru/crypto-kurs/all.html'
     response = requests.get(url)
     soup = BeautifulSoup(response.text, 'html.parser')

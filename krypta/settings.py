@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
 from pathlib import Path
-from decouple import config, Csv
 
+from corsheaders.defaults import default_headers
+from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,14 +81,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'krypta.wsgi.application'
 
-
-CORS_ALLOWED_ORIGINS = [
-    "https://krypto1171.com",
-    "https://sub.example.com",
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "observe",
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = [
+    "http://192.168.88.14:3000/",
+    "http://192.168.89.36:8000/",
+]
+
+
+# CORS_ORIGIN_REGEX_WHITELIST = [
+#     'http://.pythonanywhere.com',
+#     'http://192.168.89.49',
+#     'http://192.168.88.14'
+# ]
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
@@ -149,7 +159,7 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
-        ],
+    ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 100,
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -164,7 +174,6 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
