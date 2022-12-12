@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'celery',
     'django_filters',
     'corsheaders',
+    'django_celery_results',
 ]
 
 # Application definition
@@ -88,10 +89,10 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_WHITELIST = [
-    "http://192.168.88.14:3000/",
-    "http://192.168.89.36:8000/",
-]
+# CORS_ORIGIN_WHITELIST = [
+    # "http://192.168.88.14:3000/",
+    # "http://192.168.89.36:8000/",
+# ]
 
 
 # CORS_ORIGIN_REGEX_WHITELIST = [
@@ -177,6 +178,7 @@ EMAIL_USE_SSL = False
 
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_TIMEZONE = "Asia/Bishkek"
+CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Bishkek'

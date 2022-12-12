@@ -4,7 +4,7 @@ from django.db import models
 class Value(models.Model):
     title = models.CharField(max_length=50)
     volume = models.CharField(max_length=50, null=True)
-    price = models.DecimalField(max_digits=15, decimal_places=3, null=True, max_length=50)
+    price = models.CharField(max_length=50)
     changes_12hour = models.CharField(null=True, max_length=50)
 
     @property
