@@ -6,14 +6,66 @@ from bs4 import BeautifulSoup
 
 @app.task()
 def parsing_value():
-    print('Работает')
-    url = 'https://bitinfocharts.com/ru/crypto-kurs/all.html'
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    body = soup.find('div', {'class': 'ma-w1'})
-    table = body.find('table', class_='table table-bordered table-condensed ma-w2 abtb')
-    tbody = table.find('tbody')
-    stroka = tbody.find_all('tr', class_='ptr')
+    try:
+        print('Работает')
+        url = 'https://bitinfocharts.com/ru/crypto-kurs/all.html'
+        response = requests.get(url)
+        response.raise_for_status()  # Проверка успешности запроса
+        soup = BeautifulSoup(response.text, 'html.parser')
+        body = soup.find('div', {'class': 'ma-w1'})
+        table = body.find('table', class_='table table-bordered table-condensed ma-w2 abtb')
+        tbody = table.find('tbody')
+        stroka = tbody.find_all('tr', class_='ptr')
+        for x in stroka:
+            changes_24h = x.find_all('td')
+            change = changes_24h[1].find('span').find('b')
+            name = changes_24h[0].find('span').find('a')
+            price = changes_24h[1].find('a', class_='conv_cur')
+            volume = changes_24h[4].find('span')
+
+            # Assign default values in case the values are not found
+            change = change.text if change else '0.0'
+            volume = volume.text if volume else '0.0'
+            name = name.text if name else ''
+            price = price.text if price else ''
+
+            # Use get_or_create to avoid the try-except block
+            obj, created = Value.objects.get_or_create(title=name)
+            obj.changes_12hour = change
+            obj.price = price
+            obj.volume = volume
+            obj.save()
+    except Exception as e:
+        # Обработка ошибки, если что-то пошло не так при парсинге данных
+        print('Ошибка при парсинге данных:', str(e))
+# def parsing_value():
+#     print('Работает')
+#     url = 'https://bitinfocharts.com/ru/crypto-kurs/all.html'
+#     response = requests.get(url)
+#     soup = BeautifulSoup(response.text, 'html.parser')
+#     body = soup.find('div', {'class': 'ma-w1'})
+#     table = body.find('table', class_='table table-bordered table-condensed ma-w2 abtb')
+#     tbody = table.find('tbody')
+#     stroka = tbody.find_all('tr', class_='ptr')
+#     for x in stroka:
+#         changes_24h = x.find_all('td')
+#         change = changes_24h[1].find('span').find('b')
+#         name = changes_24h[0].find('span').find('a')
+#         price = changes_24h[1].find('a', class_='conv_cur')
+#         volume = changes_24h[4].find('span')
+#
+#         # Assign default values in case the values are not found
+#         change = change.text if change else '0.0'
+#         volume = volume.text if volume else '0.0'
+#         name = name.text if name else ''
+#         price = price.text if price else ''
+
+        # Use get_or_create to avoid the try-except block
+        obj, created = Value.objects.get_or_create(title=name)
+        obj.changes_12hour = change
+        obj.price = price
+        obj.volume = volume
+        obj.save()
     # for x in stroka:
     #     try:
     #         changes_24h = x.find_all('td')
@@ -54,22 +106,3 @@ def parsing_value():
     #     obj.volume = volume
     #     obj.save()
 
-    for x in stroka:
-        changes_24h = x.find_all('td')
-        change = changes_24h[1].find('span').find('b')
-        name = changes_24h[0].find('span').find('a')
-        price = changes_24h[1].find('a', class_='conv_cur')
-        volume = changes_24h[4].find('span')
-
-        # Assign default values in case the values are not found
-        change = change.text if change else '0.0'
-        volume = volume.text if volume else '0.0'
-        name = name.text if name else ''
-        price = price.text if price else ''
-
-        # Use get_or_create to avoid the try-except block
-        obj, created = Value.objects.get_or_create(title=name)
-        obj.changes_12hour = change
-        obj.price = price
-        obj.volume = volume
-        obj.save()

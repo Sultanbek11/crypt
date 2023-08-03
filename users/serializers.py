@@ -46,11 +46,6 @@ class ChangePasswordSerializer(serializers.Serializer):
 
 
 class LoginSerializer(serializers.ModelSerializer):
-    # email = serializers.CharField(max_length=255)
-    # password = serializers.CharField(max_length=128, write_only=True)
-    # token = serializers.CharField(max_length=255, read_only=True)
-    # model = Users
-
     class Meta:
         model = Users
         fields = ('email', 'password')

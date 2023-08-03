@@ -1,4 +1,4 @@
-.env
+
 .idea
 __pycache__/
 krypta/__pycache__/wsgi.cpython-310.pyc
