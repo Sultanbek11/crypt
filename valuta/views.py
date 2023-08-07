@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from rest_framework import viewsets, generics
 from rest_framework import filters
 from .models import Value
@@ -11,6 +12,7 @@ class ValueListAPIView(generics.ListAPIView):
     serializer_class = ValueSerializer
     filter_backends = [filters.OrderingFilter]
     filterset_fields = ['id']
+
 
     # def get(self, request):
     #     url = 'https://bitinfocharts.com/ru/crypto-kurs/all.html'
@@ -39,6 +41,7 @@ class ValueListAPIView(generics.ListAPIView):
     #         obj.price = price
     #         obj.volume = volume
     #         obj.save()
+    #     return JsonResponse({'status': 'ok'})
 
 class ValueRetriveAPIView(generics.RetrieveAPIView):
     queryset = Value.objects.all()
