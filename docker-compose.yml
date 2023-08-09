@@ -17,6 +17,8 @@ services:
       - redis
       - celery
       - celery-beat
+    networks:
+      - mynetwork
 
   db:
     image: postgres:latest
