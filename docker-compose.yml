@@ -1,0 +1,55 @@
+version: '3'
+
+networks:
+  mynetwork:
+    driver: bridge
+
+services:
+  web:
+    build: .
+    command: gunicorn krypta.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+      - celery
+      - celery-beat
+
+  db:
+    image: postgres:latest
+    networks:
+      - mynetwork
+    environment:
+      POSTGRES_DB: crypt
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+
+  redis:
+    image: redis:latest
+    networks:
+      - mynetwork
+
+  celery:
+    build: .
+    command: celery -A krypta worker -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    networks:
+      - mynetwork
+
+  celery-beat:
+    build: .
+    command: celery -A krypta beat -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - redis
+    networks:
+      - mynetwork

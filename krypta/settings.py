@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'celery',
     'django_filters',
     'corsheaders',
-    'django_celery_results',
 ]
 
 # Application definition
@@ -89,23 +88,11 @@ CORS_ALLOW_HEADERS = list(default_headers) + [
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-# CORS_ORIGIN_WHITELIST = [
-    # "http://192.168.88.14:3000/",
-    # "http://192.168.89.36:8000/",
-# ]
 
-
-# CORS_ORIGIN_REGEX_WHITELIST = [
-#     'http://.pythonanywhere.com',
-#     'http://192.168.89.49',
-#     'http://192.168.88.14'
-# ]
-# Database
-# https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
     'postgresql': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': config("DATABASE_NAME"),
         'USER': config("DATABASE_USER"),
         'PASSWORD': config("DATABASE_PASSWORD"),
@@ -176,8 +163,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_BROKER_URL = 'redis://redis:6379'
+CELERY_RESULT_BACKEND = 'redis://redis:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
